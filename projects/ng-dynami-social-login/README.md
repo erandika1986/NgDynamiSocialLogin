@@ -21,9 +21,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 
 import { AppComponent } from './app.component';
-import { AuthServiceConfig } from './dynami-social-login/services/auth.service.config';
-import { GoogleLoginProvider, FacebookLoginProvider, LinkedinLoginProvider } from './dynami-social-login/providers';
-import { DynamiSocialLoginModule } from './dynami-social-login/dynami-social-login.module';
+import { DynamiSocialLoginModule, AuthServiceConfig, GoogleLoginProvider } from 'ng-dynami-social-login';
 
 
 export function getAuthServiceConfigs() {
@@ -82,8 +80,7 @@ In `login.componentng g c logo.ts`
 ...
 
 import { Component, OnInit } from '@angular/core';
-import { AuthService } from '../dynami-social-login/services/auth.service';
-import { FacebookLoginProvider, GoogleLoginProvider, LinkedinLoginProvider } from '../dynami-social-login/providers';
+import { AuthService, FacebookLoginProvider, GoogleLoginProvider, LinkedinLoginProvider } from 'ng-dynami-social-login';
 
 
 @Component({
