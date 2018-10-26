@@ -16,6 +16,14 @@
     "lib": [
       "es2018",
       "dom"
-    ]
+    ],
+    "paths": {
+      "ng-dynami-social-login": [
+        "dist/ng-dynami-social-login"
+      ],
+      "ng-dynami-social-login/*": [
+        "dist/ng-dynami-social-login/*"
+      ]
+    }
   }
 }

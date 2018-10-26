@@ -1,27 +1,134 @@
-# DynamiAngularSocialLogin
+This is social login API for Angular 7.0.3 (Facebook, Google and Linkedin) 
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 7.0.3.
+Big thanks to  https://github.com/sabyasachibiswal/angular5-social-login . Since They do not support angular 7+ I have modified their source code and published it here to help others.
 
-## Development server
+## Getting Started
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
+### Install package via npm installer
 
-## Code scaffolding
+```sh
+npm install ng-dynami-social-login
+```
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+###Import the module
 
-## Build
+In `app.module.ts`
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory. Use the `--prod` flag for a production build.
+```javascript
+...
 
-## Running unit tests
+import { BrowserModule } from '@angular/platform-browser';
+import { NgModule } from '@angular/core';
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+import { AppComponent } from './app.component';
+import { AuthServiceConfig } from './dynami-social-login/services/auth.service.config';
+import { GoogleLoginProvider, FacebookLoginProvider, LinkedinLoginProvider } from './dynami-social-login/providers';
+import { DynamiSocialLoginModule } from './dynami-social-login/dynami-social-login.module';
 
-## Running end-to-end tests
 
-Run `ng e2e` to execute the end-to-end tests via [Protractor](http://www.protractortest.org/).
+export function getAuthServiceConfigs() {
+  let config = new AuthServiceConfig(
+      [
+         {
+          id: FacebookLoginProvider.PROVIDER_ID,
+          provider: new FacebookLoginProvider("XXXXXX")
+        },
+        {
+          id: GoogleLoginProvider.PROVIDER_ID,
+          provider: new GoogleLoginProvider("XXXxXXXX.apps.googleusercontent.com")
+        }
+         ,
+          {
+            id: LinkedinLoginProvider.PROVIDER_ID,
+            provider: new LinkedinLoginProvider("XXXXXXXxXX")
+          },
+      ]
+  );
+  return config;
+}
 
-## Further help
+@NgModule({
+  declarations: [
+    AppComponent
+  ],
+  imports: [
+    BrowserModule,
+    DynamiSocialLoginModule
+  ],
+  providers: [{
+    provide: AuthServiceConfig,
+    useFactory: getAuthServiceConfigs
+  }],
+  bootstrap: [AppComponent]
+})
+export class AppModule { }
 
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI README](https://github.com/angular/angular-cli/blob/master/README.md).
+```
+
+In `login.component.html`
+
+```html
+<h1>
+     Sign in
+</h1>
+
+<button (click)="socialSignIn('facebook')">Sign in with Facebook</button>
+<button (click)="socialSignIn('google')">Signin in with Google</button>              
+```
+
+In `login.componentng g c logo.ts`
+
+```javascript
+...
+
+import { Component, OnInit } from '@angular/core';
+import { AuthService } from '../dynami-social-login/services/auth.service';
+import { FacebookLoginProvider, GoogleLoginProvider, LinkedinLoginProvider } from '../dynami-social-login/providers';
+
+
+@Component({
+  selector: 'app-login',
+  templateUrl: './login.component.html',
+  styleUrls: ['./login.component.css']
+})
+export class LoginComponent implements OnInit {
+
+  constructor(private socialAuthService: AuthService) { }
+
+  ngOnInit() {
+  }
+
+  public socialSignIn(socialPlatform : string) {
+    let socialPlatformProvider;
+    if(socialPlatform == "facebook"){
+      socialPlatformProvider = FacebookLoginProvider.PROVIDER_ID;
+    }else if(socialPlatform == "google"){
+      socialPlatformProvider = GoogleLoginProvider.PROVIDER_ID;
+    } else if (socialPlatform == "linkedin") {
+      socialPlatformProvider = LinkedinLoginProvider.PROVIDER_ID;
+    }
+    
+    this.socialAuthService.signIn(socialPlatformProvider).then(
+      (userData) => {
+
+        console.log(userData);
+
+            
+      }
+    );
+  }
+
+}
+
+```
+
+### Facebook App Id : 
+
+You need to create your own facebook app by going to [Facebook Developers](https://developers.facebook.com/) page.
+Add `Facebook login` under products and configure `Valid OAuth redirect URIs`.
+
+### Google Client Id : 
+
+Follow this official documentation on how to [
+Create a Google API Console project and client ID](https://developers.google.com/identity/sign-in/web/devconsole-project).
+
